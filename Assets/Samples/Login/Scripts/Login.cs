@@ -25,7 +25,6 @@ public class Login : MonoBehaviour {
 	void Awake() {
 
 		FacebookBinding.Init(APP_ID);
-
 	}
 
 	void OnGUI () {
