@@ -21,8 +21,8 @@ public class CreateAccount : MonoBehaviour {
 		GUI.DrawTexture(UtilResize.ResizeGUI(new Rect(0,0,320,480)),backgroundImg);
 		
 		GUI.Label(UtilResize.ResizeGUI(new Rect(80,10,220,20)),"eMail*","LabelBold");
-		email = GUI.TextField (UtilResize.ResizeGUI(new Rect (80, 30, 220, 40)), email, 25);
-		
+		email = GUI.TextField (UtilResize.ResizeGUI(new Rect (80, 30, 220, 40)), email, 100);
+
 		GUI.Label(UtilResize.ResizeGUI(new Rect(80,75,220,20)),"Password*","LabelBold");
 		password = GUI.PasswordField (UtilResize.ResizeGUI(new Rect (80, 100, 220, 40)), password,'*');
 		
@@ -30,7 +30,7 @@ public class CreateAccount : MonoBehaviour {
 		repassword = GUI.PasswordField (UtilResize.ResizeGUI(new Rect (80, 170, 220, 40)), repassword,'*');
 		
 		GUI.Label(UtilResize.ResizeGUI(new Rect(80,215,200,20)),"Nickname*","LabelBold");
-		nickname = GUI.TextField (UtilResize.ResizeGUI(new Rect (80, 240, 220, 40)), nickname,'*');
+		nickname = GUI.TextField (UtilResize.ResizeGUI(new Rect (80, 240, 220, 40)), nickname,25);
 		
 
 		if (GUI.Button (UtilResize.ResizeGUI(new Rect (80,290, 220, 50)), "Create")) {
@@ -41,7 +41,7 @@ public class CreateAccount : MonoBehaviour {
 				&& (password == repassword)) {
 			
 				Credentials credentials = new Credentials();
-				credentials.email = email;
+				credentials.email = email.ToLower();
 				credentials.password = password;
 				GDUser user = new GDUser();
 				user.credentials = credentials;
@@ -72,7 +72,7 @@ public class CreateAccount : MonoBehaviour {
 	void OnCreateUser(bool success) {
 		
 		if (success) {				
-			GamedoniaUsers.LoginUserWithEmail(email,password,OnLogin);					
+			GamedoniaUsers.LoginUserWithEmail(email.ToLower(),password,OnLogin);					
 		}else {			
 			errorMsg = Gamedonia.getLastError().ToString();
 			Debug.Log(errorMsg);

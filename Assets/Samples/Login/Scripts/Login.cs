@@ -36,14 +36,14 @@ public class Login : MonoBehaviour {
 		GUI.enabled = (statusMsg == "");
 		//Login Controls
 		GUI.Label(UtilResize.ResizeGUI(new Rect(80,10,220,20)),"eMail","LabelBold");
-		email = GUI.TextField (UtilResize.ResizeGUI(new Rect (80, 30, 220, 40)), email, 25);
+		email = GUI.TextField (UtilResize.ResizeGUI(new Rect (80, 30, 220, 40)), email, 100);
 		
 		GUI.Label(UtilResize.ResizeGUI(new Rect(80,75,220,20)),"Password", "LabelBold");
 		password = GUI.PasswordField (UtilResize.ResizeGUI(new Rect (80, 100, 220, 40)), password,'*');
 		
 			
 		if (GUI.Button (UtilResize.ResizeGUI(new Rect (80,150, 220, 50)), "Login")) {
-			GamedoniaUsers.LoginUserWithEmail(email,password,OnLogin);
+			GamedoniaUsers.LoginUserWithEmail(email.ToLower(),password,OnLogin);
 		}
 
 		GUIStyle fbButton = GUI.skin.GetStyle ("ButtonFacebook");
