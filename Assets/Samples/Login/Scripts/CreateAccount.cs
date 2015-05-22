@@ -16,8 +16,7 @@ public class CreateAccount : MonoBehaviour {
 	void OnGUI () {
 		
 		GUI.skin = skin;
-		// Make a text field that modifies stringToEdit.
-		//GUI.backgroundColor = Color.black;
+
 		GUI.DrawTexture(UtilResize.ResizeGUI(new Rect(0,0,320,480)),backgroundImg);
 		
 		GUI.Label(UtilResize.ResizeGUI(new Rect(80,10,220,20)),"eMail*","LabelBold");

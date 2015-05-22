@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gamedonia.sdk"
+	android:installLocation="preferExternal"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:anyDensity="true"/>
+
+	<!-- Permission required to use the TCP transport -->
+	<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+	<!-- Push notifications permission -->
+	<uses-permission android:name="android.permission.VIBRATE" />-->
+   	<permission android:name="com.gamedonia.sdk.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+	<uses-permission android:name="com.gamedonia.sdk.permission.C2D_MESSAGE" />	
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" /><!-- App receives GCM messages. -->
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" /><!-- GCM requires a Google account. -->
+	<uses-permission android:name="android.permission.WAKE_LOCK" />	<!-- Keeps the processor from sleeping when a message is received. -->	
+	
+	<!-- InApp purchase permissions -->
+	<!-- <uses-permission android:name="com.android.vending.BILLING" /> -->
+	
+    <application
+		android:icon="@drawable/app_icon"
+        android:label="@string/app_name"
+        android:debuggable="true">
+        	
+        	
+        <activity android:name="com.gamedonia.sdk.GamedoniaUnityPlayerActivity"
+                  android:label="@string/app_name"
+                  android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.unity3d.player.UnityPlayerNativeActivity"
+                  android:label="@string/app_name"
+                  android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
+            <meta-data android:name="android.app.lib_name" android:value="unity" />
+            <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="false" />
+        </activity>
+        <activity android:name="com.unity3d.player.VideoPlayer"
+                  android:label="@string/app_name"
+                  android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
+        </activity>
+        
+        <!-- Facebook Setup -->
+		<activity android:name="com.facebook.LoginActivity"/>
+        <activity android:name="com.gamedonia.sdk.social.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+        <activity android:name="com.gamedonia.sdk.social.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+	
+
+		<!-- Push notifiactions settings -->
+		<activity android:name="com.gamedonia.pushnotifications.GamedoniaPushHandlerActivity" />
+		
+        <receiver android:name="com.gamedonia.pushnotifications.PushBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+		  <intent-filter>
+		    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+		    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+		    <category android:name="com.gamedonia.sdk" />
+		  </intent-filter>
+		</receiver>		
+        <service android:name="com.gamedonia.pushnotifications.PushIntentService" />
+       
+        
+        <!-- InApp purchase settings -->
+        <!--
+        <activity android:name="com.gamedonia.inapppurchase.BillingProxyActivity" android:theme="@style/Theme.Transparent"></activity>
+        <service android:name="com.gamedonia.inapppurchase.UnityAndroidInterface" />
+        -->		
+		    
+    </application>
+	
+	
+</manifest>
