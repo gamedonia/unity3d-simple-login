@@ -112,13 +112,13 @@ public class Download: RequestDelegate
 			this.cleanupConnectionSuccessful (false);
 			yield return null;
 		}
-		
+
+		dispatchDownloadEvent (DOWNLOAD_DID_START, this);
+
 		//Debug.Log ("Before download");
 		request.Send (this.tempFilename);
 		//Debug.Log ("After download");
-		
-		dispatchDownloadEvent (DOWNLOAD_DID_START, this);
-
+	
 		while (!request.isDone) {
 			yield return request;
 		}

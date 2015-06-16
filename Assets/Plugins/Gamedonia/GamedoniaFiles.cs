@@ -18,6 +18,7 @@ public class GamedoniaFiles: MonoBehaviour
 	private DownloadManager downloadManager;
 	private string downloadFolder;
 	private ArrayList downloads;
+	private ArrayList downloadeds;
 	private int pendingUrlDownloads;
 
 	private static GamedoniaFiles _instance;
@@ -47,6 +48,7 @@ public class GamedoniaFiles: MonoBehaviour
 		//Debug.Log ("[GamedoniaFiles] Awake executed");
 		downloadFolder = Application.persistentDataPath + "/downloads";
 		downloads = new ArrayList ();
+		downloadeds = new ArrayList ();
 
 		downloadManager = new DownloadManager(downloadFolder);
 		downloadManager.maxConcurrentDownloads = 4;
@@ -81,7 +83,6 @@ public class GamedoniaFiles: MonoBehaviour
 
 
 	public void AddDownloadWithFileId(string fileId) {
-		
 		if (fileId != null) {
 			if (downloads == null) downloads = new ArrayList();				
 			downloads.Add(fileId);
@@ -92,13 +93,23 @@ public class GamedoniaFiles: MonoBehaviour
 	}
 
 	public void Begin() {
-		
+
 		pendingUrlDownloads = downloads.Count;
 		
 		foreach (string fileId in downloads) 
 		{
 			RequestAndAddDownload(fileId);
 		}
+
+		#if UNITY_STANDALONE
+		//Remove downloadeds
+		ArrayList tmpDownloads = (ArrayList) downloads.Clone();
+		downloads.Clear();
+		foreach (string fileId in tmpDownloads) {
+			if (!downloadeds.Contains(fileId)) downloads.Add(fileId);
+		}
+		downloadeds.Clear();
+		#endif
 		
 	}
 	
@@ -167,7 +178,6 @@ public class GamedoniaFiles: MonoBehaviour
 
 		this.RemoveResolvedDownloadUrl(downloadJSON);
 		this.RemoveDownload(fileId);
-		
 		resolvedDownloadUrls.Add(downloadJSON);
 		
 		if (pendingUrlDownloads == 0) {
@@ -198,23 +208,19 @@ public class GamedoniaFiles: MonoBehaviour
 
 		//downloadManager.RemoveDownload (download);
 
+		#if UNITY_STANDALONE
+		if (downloadeds == null) downloadeds = new ArrayList();
+		downloadeds.Add(fileId);
+		#else
 		int removeIndex = downloads.IndexOf (fileId);
 		if (removeIndex != -1) downloads.RemoveAt (removeIndex);
+		#endif
 
 	}
 
-	/*
-	private function removeDownload(fileId:String):void {
-		
-		var removeIndex:int = -1;
-		for each (var dFileId:String in downloads) 
-		{
-			if (fileId == dFileId) removeIndex = downloads.indexOf(dFileId);  					
-			
-		}
-		
-		if (removeIndex !=-1) downloads.splice(removeIndex,1);
-		
-	}*/
+	private void RemoveAllDownload() {
+		downloads.Clear();
+	}
+
 
 }

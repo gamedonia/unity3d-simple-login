@@ -30,6 +30,7 @@ public class DownloadManager: DownloadDelegate
 
 
 	private ArrayList _downloads;
+	private ArrayList _downloadeds;
 	private int _maxConcurrentDownloads;
 	private bool _cancelAllInProgress;
 	private bool _paused = false;
@@ -48,7 +49,8 @@ public class DownloadManager: DownloadDelegate
 	public DownloadManager (string filesystemPath)
 	{
 		_downloads = new ArrayList();
-		_maxConcurrentDownloads = 12;
+		_downloadeds = new ArrayList();
+		_maxConcurrentDownloads = 4;
 		this.filesystemPath = filesystemPath;
 
 
@@ -167,7 +169,12 @@ public class DownloadManager: DownloadDelegate
 		this.RemoveDownload(download);
 		this.RemoveResolveDownloadUrl(JsonMapper.ToJson(download));
 		this.dispatchEvent(DOWNLOAD_DID_FINISH_LOADING,download);
+
+		#if UNITY_STANDALONE
+		#else
 		this.tryDownloading ();
+		#endif
+
 
 	}
 	public void downloadDidFail (Download download)
@@ -180,7 +187,10 @@ public class DownloadManager: DownloadDelegate
 		if (DownloadDidFail != null) DownloadDidFail(this, dEvent);
 		
 		if (!this._cancelAllInProgress) {
-			this.tryDownloading();
+			#if UNITY_STANDALONE
+			#else
+			this.tryDownloading ();
+			#endif
 		}	
 	}
 	public void downloadDidFailConnectivity (Download download)
@@ -192,7 +202,10 @@ public class DownloadManager: DownloadDelegate
 		if (DownloadDidFail != null) DownloadDidFail(this, dEvent);
 		
 		if (!this._cancelAllInProgress) {
-			this.tryDownloading();
+			#if UNITY_STANDALONE
+			#else
+			this.tryDownloading ();
+			#endif
 		}		
 	}
 	public void downloadDidFailNoAvailableSpace (Download download)
@@ -204,7 +217,10 @@ public class DownloadManager: DownloadDelegate
 		if (DownloadDidFail != null) DownloadDidFail(this, dEvent);
 		
 		if (!this._cancelAllInProgress) {
-			this.tryDownloading();
+			#if UNITY_STANDALONE
+			#else
+			this.tryDownloading ();
+			#endif
 		}	
 	}
 	public void downloadDidReceiveData (Download download)
@@ -220,7 +236,7 @@ public class DownloadManager: DownloadDelegate
 		
 		foreach (Download _download in _downloads) 
 		{
-			if (!_download.isDownloading()) {
+			if (!_download.isDownloading() && !_downloadeds.Contains(_download)) {
 				allRunning = false;
 				break;
 			}
@@ -238,11 +254,14 @@ public class DownloadManager: DownloadDelegate
 		}		
 	}
 	#endregion
-
+	
 
 	public void RemoveDownload(Download download) {
 
-		//Debug.Log ("Remove Download");
+		#if UNITY_STANDALONE
+		if (_downloadeds == null) _downloadeds = new ArrayList();
+		_downloadeds.Add(download);
+		#else
 		int removeIndex = -1;
 		foreach (Download item in _downloads) 
 		{
@@ -250,8 +269,9 @@ public class DownloadManager: DownloadDelegate
 			
 		}
 		
-		if (removeIndex != -1) _downloads.RemoveAt (removeIndex);	
-		
+		if (removeIndex != -1) _downloads.RemoveAt (removeIndex);
+		#endif
+
 	}
 	
 	public void RemoveResolveDownloadUrl(string resolvedDownloadUrl) {
@@ -305,28 +325,39 @@ public class DownloadManager: DownloadDelegate
 
 		}
 			
-
 	}
 
 	private void tryDownloading() {
 		int totalDownloads = this.getPendingDownloads();
 
-			if (totalDownloads == 0) {
-				this.informDelegateThatDownloadsAreDone();
-				return;
-			}
+		if (totalDownloads == 0) {
+			this.informDelegateThatDownloadsAreDone();
+			return;
+		}
 			
-			if (this.countUnstartedDownloads() > 0  && this.countActiveDownloads() < this._maxConcurrentDownloads) {
+		if (this.countUnstartedDownloads() > 0  && this.countActiveDownloads() < this._maxConcurrentDownloads) {
 				
-				foreach (Download download in _downloads) 
-				{
-					if (!download.isDownloading()) {
-
-						download.Start();
-					}
+			foreach (Download download in _downloads) 
+			{
+				if (!download.isDownloading()) {
+					download.Start();
 				}
-				
 			}
+
+			#if UNITY_STANDALONE
+			//Remove downloadeds
+			ArrayList tmpDownloads = (ArrayList) _downloads.Clone();
+			_downloads.Clear();
+			foreach (Download download in tmpDownloads) {
+				if (!_downloadeds.Contains(download)) _downloads.Add(download);
+			}
+			_downloadeds.Clear();
+			
+			this.tryDownloading();
+			#endif
+				
+		}
+
 	}
 	
 	private int getPendingDownloads() {
