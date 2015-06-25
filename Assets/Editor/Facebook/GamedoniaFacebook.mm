@@ -15,7 +15,7 @@
 void openSessionWithPermissionsOfType(const char** permissions, int size, const char *type, bool allowUI);
 void reauthorizeSessionWithPermissionsOfType(const char** permissions, int size, const char *type);
 
-void _init(const char* appID,const char* urlSchemeSuffix, BOOL frictionless) {
+void _init(const char* appID,const char* urlSchemeSuffix, bool frictionless) {
     
     // Retrieve application ID
     NSString *_appID = [NSString stringWithUTF8String:appID];
@@ -29,16 +29,16 @@ void _init(const char* appID,const char* urlSchemeSuffix, BOOL frictionless) {
     [[GamedoniaSDKFacebookHelper sharedInstance] setupWithAppID:_appID urlSchemeSuffix:_urlSchemeSuffix];
 }
 
-BOOL _isSessionOpen() {
+bool _isSessionOpen() {
     
     FBSession *session = [FBSession activeSession];
-    BOOL isSessionOpen = [session isOpen];
+    bool isSessionOpen = [session isOpen];
     
     return isSessionOpen;
 }
 
 
-void _openSessionWithReadPermissions(const char** permissions, int size, BOOL allowUI) {
+void _openSessionWithReadPermissions(const char** permissions, int size, bool allowUI) {
     openSessionWithPermissionsOfType(permissions, size, "read", allowUI);
 }
 
@@ -191,7 +191,7 @@ void _getAccessToken(char* destAccessToken,  size_t n) {
     
 }
 
-void _dialog(const char* method, const char* parameters, BOOL allowNativeUI, const char* callbackName) {
+void _dialog(const char* method, const char* parameters, bool allowNativeUI, const char* callbackName) {
     
     
     NSString *nsmethod = [NSString stringWithUTF8String:method];
@@ -215,10 +215,10 @@ void _dialog(const char* method, const char* parameters, BOOL allowNativeUI, con
     
     // If possible, open new-style Facebook sharing sheet
     FBSession *session = [FBSession activeSession];
-    BOOL canPresentNativeDialog = [FBDialogs canPresentOSIntegratedShareDialogWithSession:session];
-    BOOL isFeedDialog = [nsmethod isEqualToString:@"feed"];
-    BOOL isRequestDialog = [nsmethod isEqualToString:@"apprequests"];
-    BOOL hasNoRecipient = ([nsparameters objectForKey:@"to"] == nil || [[nsparameters objectForKey:@"to"] length] == 0);
+    bool canPresentNativeDialog = [FBDialogs canPresentOSIntegratedShareDialogWithSession:session];
+    bool isFeedDialog = [nsmethod isEqualToString:@"feed"];
+    bool isRequestDialog = [nsmethod isEqualToString:@"apprequests"];
+    bool hasNoRecipient = ([nsparameters objectForKey:@"to"] == nil || [[nsparameters objectForKey:@"to"] length] == 0);
     
     NSLog(@"displaying facebook feed dialog : allowNativeUI - %@, canPresentNativeDialog - %@, isFeedingDialog - %@, hasNoRecipient - %@",allowNativeUI ? @"YES" : @"NO",
           canPresentNativeDialog ? @"YES" : @"NO",

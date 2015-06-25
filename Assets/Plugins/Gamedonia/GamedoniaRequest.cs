@@ -285,7 +285,6 @@ public static class GamedoniaRequest
 	}
 	
 	private static string Sign(String apiKey, String secret,String date, String requestMethod, String path) {					
-	
 		
 		string toSign = requestMethod + "\n" + date + "\n" + path;	
 		
@@ -293,7 +292,6 @@ public static class GamedoniaRequest
 		
 		if (Gamedonia.INSTANCE.debug) {
 			Debug.Log("hmac:" + signature);
-			//Debug.Log("Md5: " + contentMd5);
 		}
 		return signature;
 					

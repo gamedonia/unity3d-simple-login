@@ -1,19 +1,16 @@
-///////////////////////////
-Gamedonia Unity SDK Readme
-///////////////////////////
+///////////////////////////////////
+Gamedonia Unity SDK Readme (1.13.3)
+///////////////////////////////////
 
-Release 1.13.0 Changelog:
--------------------------
+To use this SDK:
 
-- Added support for push notifications from background in Unity 5 for Android.
+1. Open a Unity project.
+2. Go to Assets > Import Package > Custom Packages...
+3. Select all and import.
+4. Add the Gamedonia prefab to you main scene. You can find it in Plugins/Gamedonia/Prefab.
+5. Visit the Gamedonia Dashboard and open the Game Management > Information tab. Copy the Api key and Game Secret. We recommend using the normal development API key:
+6. Fill the Api key and Secret fields of the Gamedonia object with the information you have on the Dashboard.
 
-  IMPORTANT: The AndroidManifest.xml has been modified and will be replaced with a new one. If you don't want to lose your changes, deselect the AndroidManifest.xml when importing this version of the SDK and replace the activity called "com.gamedonia.sdk.GamedoniaUnityPlayerProxyActivity" with this one:
+You can also follow the more detailed instructions here: https://docs.gamedonia.com/get-started/unity3d
 
-    <activity android:name="com.gamedonia.sdk.GamedoniaUnityPlayerActivity"
-              android:label="@string/app_name"
-              android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+Changelog: https://dashboard.gamedonia.com/content/release-notes-unity-3d

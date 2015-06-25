@@ -436,7 +436,7 @@ public class GamedoniaUsers
 
 	private static GDUserProfile DeserializeUserProfile (string data) {
 
-		Debug.Log ("Deserializing user");
+		//Debug.Log ("Deserializing user");
 		IDictionary userMap = Json.Deserialize((string)data) as IDictionary;
 		GDUserProfile user = new GDUserProfile ();
 

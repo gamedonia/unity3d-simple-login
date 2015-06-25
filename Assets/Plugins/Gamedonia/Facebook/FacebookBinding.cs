@@ -21,19 +21,19 @@ public class FacebookBinding {
 		private static extern void _getAccessToken(StringBuilder accessToken, int n);
 
 		[DllImport ("__Internal")]
-		private static extern void _openSessionWithReadPermissions(string [] permissions, bool allowUI);
+		private static extern void _openSessionWithReadPermissions(string [] permissions, int size, bool allowUI);
 
 		[DllImport ("__Internal")]
-		private static extern void _openSessionWithPublishPermissions(string [] permissions);
+		private static extern void _openSessionWithPublishPermissions(string [] permissions, int size);
 
 		[DllImport ("__Internal")]
-		private static extern void _openSessionWithPermissions(string [] permissions);
+		private static extern void _openSessionWithPermissions(string [] permissions, int size);
 
 		[DllImport ("__Internal")]
-		private static extern void _reauthorizeSessionWithReadPermissions(string [] permissions);
+		private static extern void _reauthorizeSessionWithReadPermissions(string [] permissions, int size);
 
 		[DllImport ("__Internal")]
-		private static extern void _reauthorizeSessionWithPublishPermissions(string [] permissions);
+		private static extern void _reauthorizeSessionWithPublishPermissions(string [] permissions, int size);
 
 		[DllImport ("__Internal")]
 		private static extern void _closeSessionAndClearTokenInformation();
@@ -67,31 +67,31 @@ public class FacebookBinding {
 			return facebookClass.CallStatic<string>("getAccessToken",new object [] {});	
 		}
 
-		private static void _openSessionWithReadPermissions(string [] permissions, bool allowUI) {
+		private static void _openSessionWithReadPermissions(string [] permissions, int size, bool allowUI) {
 			AndroidJNI.AttachCurrentThread(); 			
 			AndroidJavaClass facebookClass = new AndroidJavaClass("com.gamedonia.sdk.social.GamedoniaSDKFacebook");					
 			facebookClass.CallStatic("openSessionWithPermissions",new object [] {permissions,"read"});
 		}
 
-		private static void _openSessionWithPublishPermissions(string [] permissions) {
+		private static void _openSessionWithPublishPermissions(string [] permissions, int size) {
 			AndroidJNI.AttachCurrentThread(); 			
 			AndroidJavaClass facebookClass = new AndroidJavaClass("com.gamedonia.sdk.social.GamedoniaSDKFacebook");					
 			facebookClass.CallStatic("openSessionWithPermissions",new object [] {permissions,"publish"});
 		}
 
-		private static void _openSessionWithPermissions(string [] permissions) {
+		private static void _openSessionWithPermissions(string [] permissions, int size) {
 			AndroidJNI.AttachCurrentThread(); 			
 			AndroidJavaClass facebookClass = new AndroidJavaClass("com.gamedonia.sdk.social.GamedoniaSDKFacebook");					
 			facebookClass.CallStatic("openSessionWithPermissions",new object [] {permissions,"readAndPublish"});
 		}
 
-		private static void _reauthorizeSessionWithReadPermissions(string [] permissions) {
+		private static void _reauthorizeSessionWithReadPermissions(string [] permissions, int size) {
 			AndroidJNI.AttachCurrentThread(); 			
 			AndroidJavaClass facebookClass = new AndroidJavaClass("com.gamedonia.sdk.social.GamedoniaSDKFacebook");					
 			facebookClass.CallStatic("reauthorizeSessionWithPermissions",new object [] {permissions,"read"});
 		}
 
-		private static void _reauthorizeSessionWithPublishPermissions(string [] permissions) {
+		private static void _reauthorizeSessionWithPublishPermissions(string [] permissions, int size) {
 			AndroidJNI.AttachCurrentThread(); 			
 			AndroidJavaClass facebookClass = new AndroidJavaClass("com.gamedonia.sdk.social.GamedoniaSDKFacebook");					
 			facebookClass.CallStatic("reauthorizeSessionWithPermissions",new object [] {permissions,"publish"});
@@ -133,27 +133,27 @@ public class FacebookBinding {
 		}
 		
 		
-		private static void _openSessionWithReadPermissions(string [] permissions, bool allowUI) {
+	private static void _openSessionWithReadPermissions(string [] permissions, int size, bool allowUI) {
 			//Empty
 		}
 		
 		
-		private static void _openSessionWithPublishPermissions(string [] permissions) {
+	private static void _openSessionWithPublishPermissions(string [] permissions, int size) {
 			//Empty
 		}
 		
 		
-		private static void _openSessionWithPermissions(string [] permissions) {
+	private static void _openSessionWithPermissions(string [] permissions, int size) {
 			//Empty
 		}
 		
 		
-		private static void _reauthorizeSessionWithReadPermissions(string [] permissions) {
+	private static void _reauthorizeSessionWithReadPermissions(string [] permissions, int size) {
 			//Empty
 		}
 		
 		
-		private static void _reauthorizeSessionWithPublishPermissions(string [] permissions) {
+	private static void _reauthorizeSessionWithPublishPermissions(string [] permissions, int size) {
 			//Empty
 		}
 		
@@ -218,35 +218,35 @@ public class FacebookBinding {
 		public static void OpenSessionWithReadPermissions(string [] permissions, Action<bool,bool,string> callback = null, bool allowUI = true) {
 			if (!Application.isEditor) {
 					FacebookManager.Instance.openSessionCallback = callback;
-					_openSessionWithReadPermissions (permissions, allowUI);
+					_openSessionWithReadPermissions (permissions, permissions.Length, allowUI);
 			}
 		}
 
 		public static void OpenSessionWithPublishPermissions(string [] permissions, Action<bool,bool,string> callback = null) {
 			if (!Application.isEditor) {	
 					FacebookManager.Instance.openSessionCallback = callback;
-					_openSessionWithPublishPermissions (permissions);
+					_openSessionWithPublishPermissions (permissions, permissions.Length);
 			}
 		}
 
 		public static void OpenSessionWithPermissions(string [] permissions, Action<bool,bool,string> callback = null) {
 			if (!Application.isEditor) {
-				FacebookManager.Instance.openSessionCallback = callback;
-				_openSessionWithPermissions (permissions);
+					FacebookManager.Instance.openSessionCallback = callback;
+					_openSessionWithPermissions (permissions, permissions.Length);
 			}
 		}
 
 		public static void ReauthorizeSessionWithReadPermissions(string [] permissions, Action<bool,bool,string> callback = null) {
 			if (!Application.isEditor) {
-						FacebookManager.Instance.reauthorizeSessionCallback = callback;
-					_reauthorizeSessionWithReadPermissions (permissions);
+					FacebookManager.Instance.reauthorizeSessionCallback = callback;
+					_reauthorizeSessionWithReadPermissions (permissions, permissions.Length);
 			}
 		}
 
 		public static void ReauthorizeSessionWithPublishPermissions(string [] permissions, Action<bool,bool,string> callback = null) {
 			if (!Application.isEditor) {	
 					FacebookManager.Instance.reauthorizeSessionCallback = callback;
-					_reauthorizeSessionWithPublishPermissions (permissions);
+					_reauthorizeSessionWithPublishPermissions (permissions, permissions.Length);
 			}
 		}
 
