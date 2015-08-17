@@ -19,7 +19,7 @@ public static class PostBuildTrigger
 	
  
     /// Processbuild Function
-    [PostProcessBuild] // <- this is where the magic happens
+    [PostProcessBuild(100)] // <- this is where the magic happens
     public static void OnPostProcessBuild(BuildTarget target, string path)
     {
         Debug.Log("Starting Gamedonia Build PostProcess");
@@ -52,7 +52,7 @@ public static class PostBuildTrigger
 						
 
 		//string command = Application.dataPath + Path.DirectorySeparatorChar + "Editor" + Path.DirectorySeparatorChar + "GamedoniaBuildPostprocessor.pyc " + projectPath;
-		//Debug.Log ("COMMAND: " + "\"" + Application.dataPath + Path.DirectorySeparatorChar + "Editor" + Path.DirectorySeparatorChar + "Gamedonia" + Path.DirectorySeparatorChar +"GamedoniaBuildPostprocessor.pyc " + projectPath + "\"");
+		Debug.Log ("COMMAND: " + "\"" + Application.dataPath + Path.DirectorySeparatorChar + "Editor" + Path.DirectorySeparatorChar + "Gamedonia" + Path.DirectorySeparatorChar +"GamedoniaBuildPostprocessor.pyc " + projectPath + "\"");
 
 		ExecuteCommandSync("\"" + Application.dataPath + Path.DirectorySeparatorChar + "Editor" + Path.DirectorySeparatorChar + "Gamedonia" + Path.DirectorySeparatorChar +"GamedoniaBuildPostprocessor.pyc\" \"" +  projectPath + "\"");
 		

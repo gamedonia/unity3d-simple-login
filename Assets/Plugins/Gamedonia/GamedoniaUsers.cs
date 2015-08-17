@@ -43,6 +43,9 @@ public class GamedoniaUsers
 			case Gamedonia.CredentialsType.SILENT:
 				authentication = new SilentAuthentication();				
 				break;
+			case Gamedonia.CredentialsType.GOOGLE:
+				authentication = new GoogleAuthentication();				
+				break;
 			default:
 				authentication = new SessionTokenAuthentication();
 				break;
@@ -107,6 +110,29 @@ public class GamedoniaUsers
 				}
 		 	 )
 		);
+		
+	}
+
+	public static void LoginUserWithGoogle(string id, Action<bool> callback) {
+		
+		string auth = System.Convert.ToBase64String(Encoding.UTF8.GetBytes("google|" + id));
+		
+		Dictionary<string,string> body = new Dictionary<string, string>();
+		body.Add("Authorization",auth);
+		Gamedonia.RunCoroutine(
+			GamedoniaRequest.post("/account/login",JsonMapper.ToJson(body),auth,null,null,
+		                      delegate (bool success, object data) {								
+			if (success) {
+				sessionToken = JsonMapper.ToObject<GDSessionToken>((string)data);
+				PlayerPrefs.SetString("gd_session_token", sessionToken.session_token);							
+				RegisterDeviceAfterLogin(callback);						
+			}else {
+				if (callback != null) callback(success);	
+			}	
+			
+		}
+		)
+			);
 		
 	}
 
@@ -472,6 +498,7 @@ public class GDUserConstants {
 	public const string FACEBOOK 	= "facebook";
 	public const string TWITTER 	= "twitter";
 	public const string GAMECENTER 	= "gamecenter";
+	public const string GOOGLE 		= "google";
 	
 }
 
@@ -542,7 +569,20 @@ public class Credentials {
         
         get { return this._gamecenter_id; }
 	}
-	
+
+	private string _google_token_id;
+	public string google_token_id {		
+		
+		set 
+		{ 
+			this._google_token_id = value; 
+			if (type.IndexOf(GDUserConstants.GOOGLE) == -1) type.Add(GDUserConstants.GOOGLE);
+		}
+		
+		get { return this._google_token_id; }
+	}
+
+
 	
 	public List<string> type = new List<string>();
 	
@@ -746,6 +786,72 @@ public class SessionTokenAuthentication:IGamedoniaAuthentication {
 	
 	void HandleGetMe(bool success, GDUserProfile profile) {
 		if (this.callback != null) callback(true);
+	}
+	
+}
+
+
+public class GoogleAuthentication:IGamedoniaAuthentication {
+	
+	private Action<bool> callback;
+	private string _google_token_id;
+
+	public void Authenticate(Action<bool> callback) {
+		if (Gamedonia.INSTANCE.debug) Debug.Log("Google Authentication");
+		this.callback = callback;
+
+
+		GoogleBinding.SignIn (OnGoogleSignIn);
+
+
+
+
+	}
+
+
+	void OnGoogleSignIn(bool success, bool userCancelled, string message)
+	{
+		if (success) {
+			Debug.Log (">>>>>> OnGoogleSignIn");
+			_google_token_id = message;
+			GDUser user = new GDUser();
+			Credentials credentials = new Credentials();
+			credentials.google_token_id = _google_token_id;
+			user.credentials = credentials;                        	
+			
+			GamedoniaUsers.CreateUser(user, ProcessCreateUser);	
+
+
+		}else {
+			Debug.LogError("Gamedonia session couldn't be started!");
+			if (this.callback != null) callback(false);
+		}
+	}
+
+	void ProcessCreateUser(bool success) {
+
+		Debug.Log (">>>>>> ProcessCreateUser");
+		//Login with open_udid
+		GamedoniaUsers.LoginUserWithGoogle (_google_token_id, ProcessLogin);
+		
+	}
+	
+	void ProcessLogin(bool success) {		
+		if (success) {
+			//Debug.Log("Process Login");
+			if (GamedoniaUsers.me == null) {
+				GamedoniaUsers.GetMe(HandleGetMe);
+			}else {
+				if (this.callback != null) callback(success);
+			}
+		}else {
+			Debug.LogError("Gamedonia session couldn't be started!");
+			if (this.callback != null) callback(false);
+		}
+	}
+	
+	void HandleGetMe(bool success, GDUserProfile profile) {
+		if (this.callback != null) callback(success);
 	}
 	
 }

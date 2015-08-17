@@ -14,6 +14,8 @@
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<false/>
+	<key>GoogleClientId</key>
+	<string>425843927874-iih5lof1a077rt0tc7no43la1jnn2ljj.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -23,6 +25,26 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb259105240914922</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.edenicgames.sdk</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.edenicgames.sdk</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.googleusercontent.apps.425843927874-iih5lof1a077rt0tc7no43la1jnn2ljj</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.425843927874-iih5lof1a077rt0tc7no43la1jnn2ljj</string>
 			</array>
 		</dict>
 	</array>

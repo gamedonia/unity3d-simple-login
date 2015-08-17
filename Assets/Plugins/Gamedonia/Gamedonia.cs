@@ -9,7 +9,7 @@ using MiniJSON_Gamedonia;
 	
 public class Gamedonia: MonoBehaviour {
 	
-	public enum CredentialsType {SILENT, MAIL, FACEBOOK, TWITTER, GAMECENTER};
+	public enum CredentialsType {SILENT, MAIL, FACEBOOK, TWITTER, GAMECENTER, GOOGLE};
 	public enum ApiVersionNum {v1};
 	public bool paused;
 

@@ -1,8 +1,8 @@
 import re, uuid, sys, os, shutil, subprocess, datetime, json, string
-import StringIO
+#import StringIO
 import plistlib
-import hashlib
-import logging
+#import hashlib
+#import logging
 import syslog
 from UserDict import IterableUserDict
 from UserList import UserList
@@ -930,7 +930,7 @@ class XcodeProject(PBXDict):
 #
 # here we go
 #
-import syslog, plistlib
+#import syslog, plistlib
 
 class Runner:
     def log(self, message):
@@ -969,10 +969,20 @@ class Runner:
 		#plugins = get_immediate_subdirectories(unityProjectPath + '/Assets/Editor/')
 		#self.log(plugins.count())
         for pluginName in plugins if type(plugins) == type([]) else [plugins]:
-           if pluginName != 'Gamedonia':
-               self.run(pluginName, unityProjectPath + '/Assets/Editor/' + pluginName + '/')
+            if pluginName != 'Gamedonia':
+                self.run(pluginName, unityProjectPath + '/Assets/Editor/' + pluginName + '/')
 
         plistlib.writePlist(self.infoPlist, projectPlistPath)
+        
+        #Fix the path of the Frameworks headers search paths
+        for b in self.p.get_build_phases('XCBuildConfiguration'):
+            if b['buildSettings'].has_key('FRAMEWORK_SEARCH_PATHS'):
+                self.log(' Has FRAMEWORK_SEARCH_PATHS!')                
+                spaths = [];
+                spaths.append('$(inherited)')
+                spaths.append('"' + unityProjectPath + '/Assets/Editor/**"')                
+                b['buildSettings']['FRAMEWORK_SEARCH_PATHS'] = spaths
+                
         self.p.save()
 
     def run(self, pluginName, pluginPath):
@@ -1031,6 +1041,13 @@ class Runner:
             'frameworks' : requiredFrameworks + weakFrameworks,
             'libs' : dynamicLibraries
         })
+
+                  
+            #spaths.append('/Users/axaubet/Documents/workspaces/unity-workspace/gamedonia-sdk/Assets/Editor/**')
+
+            #paths.append("/Users/axaubet/Documents/workspaces/unity-workspace/gamedonia-sdk/Assets/Editor/**")
+            #b['buildSettings']['FRAMEWORK_SEARCH_PATHS'] = spaths
+
         if not neverShowCompletedMessage:
             self.alert(pluginName + ' Unity support integrated!')
 
@@ -1059,10 +1076,11 @@ def test(argv=None):
     print str(proj)
 
 def main(path):	
-	projectPath = path
-	unityProjectPath = os.getcwd().replace( '/Assets/Editor', '' )
-	plugins = get_immediate_subdirectories(unityProjectPath + '/Assets/Editor')
-	Runner( projectPath, unityProjectPath, plugins)
+    projectPath = path
+    unityProjectPath = os.getcwd().replace( '/Assets/Editor', '' )
+    #unityProjectPath = '/Users/axaubet/Documents/workspaces/unity-workspace/gamedonia-sdk'
+    plugins = get_immediate_subdirectories(unityProjectPath + '/Assets/Editor')
+    Runner( projectPath, unityProjectPath, plugins)
 
 
 if __name__ == '__main__':
