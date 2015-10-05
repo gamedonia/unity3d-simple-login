@@ -9,6 +9,7 @@
 		<string>Security.framework</string>
 		<string>CoreText.framework</string>
 		<string>AddressBook.framework</string>
+		<string>SafariServices.framework</string>
 	</array>
 	<key>pListAdditions</key>
 	<array/>

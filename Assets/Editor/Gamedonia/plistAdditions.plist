@@ -48,5 +48,15 @@
 			</array>
 		</dict>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>com.edenicgames.sdk</string>
+		<string>com.googleusercontent.apps.425843927874-iih5lof1a077rt0tc7no43la1jnn2ljj</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

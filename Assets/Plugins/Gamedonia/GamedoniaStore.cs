@@ -19,7 +19,9 @@ public class GamedoniaStore
 	public static void BuyProduct (string productIdentifier) {
 		string response = "{\"success\":true, \"status\": \"success\", \"identifier\":\"" + productIdentifier +"\", \"message\":\"\", \"transactionId\":\"\", \"receipt\":\"\"}";
 		GameObject.Find("Gamedonia").SendMessage("ProductPurchased", response);
-	}	
+	}
+
+	public static void SetNonConsumables(String [] productIdentifiers, int size) {}
 	
 	#elif UNITY_IPHONE
 	[DllImport ("__Internal")]
@@ -28,6 +30,7 @@ public class GamedoniaStore
 	public static extern void RequestProducts(String [] productIdentifiers, int size);	
 	[DllImport ("__Internal")] 
 	public static extern void BuyProduct (String productIdentifier);
+	public static void SetNonConsumables(String [] productIdentifiers, int size) {}
 	
 	#elif UNITY_ANDROID
 	private static bool started = false;
@@ -73,6 +76,13 @@ public class GamedoniaStore
 		AndroidJavaClass billingClass = new AndroidJavaClass("com.gamedonia.inapppurchase.BillingPlugin");					
 		billingClass.CallStatic("RequestProducts",new object [] {productIdentifiers});			
 	}
+
+	private static void _SetNonConsumables(string [] productIdentifiers) {
+		AndroidJNI.AttachCurrentThread(); 
+		
+		AndroidJavaClass billingClass = new AndroidJavaClass("com.gamedonia.inapppurchase.BillingPlugin");					
+		billingClass.CallStatic("SetNoConsumableProducts",new object [] {productIdentifiers});			
+	}
 	
 	// Request products
 	public static void RequestProducts( string [] productIdentifiers, int size )
@@ -80,6 +90,13 @@ public class GamedoniaStore
 		if( Application.platform == RuntimePlatform.Android )
 			_RequestProducts(productIdentifiers);
 	}	
+
+	public static void SetNonConsumables( string [] productIdentifiers, int size )
+	{
+		if( Application.platform == RuntimePlatform.Android )
+			_SetNonConsumables(productIdentifiers);
+	}
+
 
 	private static void _BuyProduct(string productIdentifier) {
 		
@@ -105,6 +122,8 @@ public class GamedoniaStore
 		string response = "{\"success\":true, \"status\": \"success\", \"identifier\":\"" + productIdentifier +"\", \"message\":\"\", \"transactionId\":\"\", \"receipt\":\"\"}";
 		GameObject.Find("Gamedonia").SendMessage("ProductPurchased", response);
 	}	
+
+	public static void SetNonConsumables(String [] productIdentifiers, int size) {}
 
 	#endif
 	
@@ -141,18 +160,6 @@ public class GamedoniaStore
 			}
 
 			_productsRequestResponse = new ProductsRequestResponse(success,message,theProducts);
-
-			/*
-
-			IList products = Json.Deserialize((string) response) as D;
-			
-			for(int i = 0; i < products.Count; i++) {
-					IDictionary product = (IDictionary) products[i];
-					_productsResponse[(string) product["identifier"]] = new ProductResponse((string) product["identifier"], 
-																							(string) product["description"], 
-																							(string) product["priceLocale"]);
-			}			
-			*/
 		}
 	
 	}

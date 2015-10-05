@@ -112,7 +112,7 @@ namespace HTTP
 			state = RequestState.Waiting;
 			if (acceptGzip)
 				SetHeader ("Accept-Encoding", "gzip");
-			//ThreadPool.QueueUserWorkItem (new WaitCallback (delegate(object t) {
+			ThreadPool.QueueUserWorkItem (new WaitCallback (delegate(object t) {
 				try {
 					var retry = 0;
 					while (++retry < maximumRetryCount) {
@@ -216,7 +216,7 @@ namespace HTTP
 				//Debug.Log ("Request finished");
 				state = RequestState.Done;
 				isDone = true;
-			//}));		
+			}));		
 		}
 
 		#else
