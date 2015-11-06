@@ -23,8 +23,6 @@ void _initGoogle(char* clientId) {
     [GIDSignIn sharedInstance].serverClientID = [NSString stringWithUTF8String:clientId];
     [GIDSignIn sharedInstance].shouldFetchBasicProfile = YES;
     [GIDSignIn sharedInstance].delegate = [GoogleHelper sharedHelper];
-    [GIDSignIn sharedInstance].allowsSignInWithWebView = YES;
-    [GIDSignIn sharedInstance].allowsSignInWithBrowser = NO;
     [GIDSignIn sharedInstance].uiDelegate = [GoogleHelper sharedHelper];
     
 

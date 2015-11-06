@@ -15,11 +15,15 @@ extern "C" {
 #endif
     char* GetOpenUDID()
     {
-        NSString* openUDID = [OpenUDID value];
+        
+        NSString *openUDID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        
+        
         const char* udid = [openUDID UTF8String];
         char* cpy = (char*)malloc(strlen(udid) + 1);
         strcpy(cpy, udid);
         return cpy;
+        
     }
 #ifdef __cplusplus
 }

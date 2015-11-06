@@ -40,18 +40,14 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 }
 
 
-
 - (void)signIn:(GIDSignIn *)signIn presentViewController:(UIViewController *)viewController {
-    
-    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    [topController presentViewController:viewController animated:NO completion:nil];
-   
+
+    NSLog(@"En Sign In Present ViewController");
 }
 
 - (void)signIn:(GIDSignIn *)signIn dismissViewController:(UIViewController *)viewController {
     
-    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    [topController dismissViewControllerAnimated:NO completion:nil];
+    NSLog(@"En Sign In Dismiss ViewController");
     
 }
 
