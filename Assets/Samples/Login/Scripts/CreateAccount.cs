@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using Gamedonia.Backend;
 
 public class CreateAccount : MonoBehaviour {
 
@@ -73,7 +74,7 @@ public class CreateAccount : MonoBehaviour {
 		if (success) {				
 			GamedoniaUsers.LoginUserWithEmail(email.ToLower(),password,OnLogin);					
 		}else {			
-			errorMsg = Gamedonia.getLastError().ToString();
+			errorMsg = GamedoniaBackend.getLastError().ToString();
 			Debug.Log(errorMsg);
 		}
 		
@@ -84,7 +85,7 @@ public class CreateAccount : MonoBehaviour {
 		if (success) {			
 			Application.LoadLevel("UserDetailsScene");			
 		}else {
-			errorMsg = Gamedonia.getLastError().ToString();
+			errorMsg = GamedoniaBackend.getLastError().ToString();
 			Debug.Log(errorMsg);
 		}
 		

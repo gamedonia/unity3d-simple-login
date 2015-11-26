@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Gamedonia.Backend;
 
 public class UserDetails : MonoBehaviour {
 
@@ -57,7 +58,7 @@ public class UserDetails : MonoBehaviour {
 			
 		}else {
 			
-			errorMsg = Gamedonia.getLastError().ToString();
+			errorMsg = GamedoniaBackend.getLastError().ToString();
 			Debug.Log(errorMsg);	
 			
 		}
@@ -69,7 +70,7 @@ public class UserDetails : MonoBehaviour {
 		if (success) {
 			this.userProfile = userProfile;
 		}else {
-			errorMsg = Gamedonia.getLastError().ToString();
+			errorMsg = GamedoniaBackend.getLastError().ToString();
 			Debug.Log(errorMsg);
 		}
 		

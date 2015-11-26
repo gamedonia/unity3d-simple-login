@@ -13,45 +13,48 @@ using System.Collections;
 using System.Collections.Generic;
 using HTTP;
 
-public class ConnectionChecker
-{
-	public const string EVENT_SUCCESS = "success";
-	public const string EVENT_ERROR = "error";
-	
-	// Though google.com might be an idea, it is generally a better practice
-	// to use a url with known content, such as http://foo.com/bar/mytext.txt
-	// By doing so, known content can also be verified.
-	
-	// This would make the checking more reliable as the wireless hotspot sign-in
-	// page would negatively intefere the result.
-	private string _urlToCheck = GamedoniaRequest.baseURL + "/" + GamedoniaRequest.version + "/ping"; 
-	
+namespace Gamedonia.Backend {
 
-	public ConnectionChecker()
+	public class ConnectionChecker
 	{
-
-	}
-	
-	public IEnumerator check(Action<bool>callback)
-	{
-
-		Request urlRequest = new Request ("GET", _urlToCheck);
-
-		urlRequest.Send();
+		public const string EVENT_SUCCESS = "success";
+		public const string EVENT_ERROR = "error";
 		
-		while (!urlRequest.isDone)
+		// Though google.com might be an idea, it is generally a better practice
+		// to use a url with known content, such as http://foo.com/bar/mytext.txt
+		// By doing so, known content can also be verified.
+		
+		// This would make the checking more reliable as the wireless hotspot sign-in
+		// page would negatively intefere the result.
+		private string _urlToCheck = GamedoniaRequest.baseURL + "/" + GamedoniaRequest.version + "/ping"; 
+		
+
+		public ConnectionChecker()
 		{
-			yield return urlRequest;
+
 		}
 		
-		if (urlRequest.response.status == 200) {
-			callback(true);
-		}else {
-			callback(false);
+		public IEnumerator check(Action<bool>callback)
+		{
+
+			Request urlRequest = new Request ("GET", _urlToCheck);
+
+			urlRequest.Send();
+			
+			while (!urlRequest.isDone)
+			{
+				yield return urlRequest;
+			}
+			
+			if (urlRequest.response.status == 200) {
+				callback(true);
+			}else {
+				callback(false);
+			}
+
 		}
 
 	}
-
 }
 
 

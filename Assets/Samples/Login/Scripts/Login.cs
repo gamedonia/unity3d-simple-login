@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Globalization;
 using System.Text;
 using System;
+using Gamedonia.Backend;
 
 public class Login : MonoBehaviour {
 
@@ -29,7 +30,7 @@ public class Login : MonoBehaviour {
 
 	void Start() {
 
-		if (  Gamedonia.INSTANCE== null) {
+		if (  GamedoniaBackend.INSTANCE== null) {
 
 			statusMsg = "Missing Api Key/Secret. Check the README.txt for more info.";
 		}
@@ -112,7 +113,7 @@ public class Login : MonoBehaviour {
 		if (success) {
 			Application.LoadLevel("UserDetailsScene");
 		}else {
-			errorMsg = Gamedonia.getLastError().ToString();
+			errorMsg = GamedoniaBackend.getLastError().ToString();
 			Debug.Log(errorMsg);
 		}
 
@@ -130,7 +131,7 @@ public class Login : MonoBehaviour {
 			GamedoniaUsers.UpdateUser(profile, OnLogin);
 
 		} else {
-			errorMsg = Gamedonia.getLastError().ToString();
+			errorMsg = GamedoniaBackend.getLastError().ToString();
 			Debug.Log(errorMsg);
 		}
 
@@ -148,7 +149,7 @@ public class Login : MonoBehaviour {
 		facebookCredentials.Add("fb_uid",fbUserId);
 		facebookCredentials.Add("fb_access_token",FacebookBinding.GetAccessToken());
 
-		GamedoniaUsers.Authenticate (Gamedonia.CredentialsType.FACEBOOK,facebookCredentials, OnFacebookLogin);
+		GamedoniaUsers.Authenticate (GamedoniaBackend.CredentialsType.FACEBOOK,facebookCredentials, OnFacebookLogin);
 
 	}
 

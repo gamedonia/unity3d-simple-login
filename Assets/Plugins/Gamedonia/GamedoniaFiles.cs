@@ -13,214 +13,216 @@ using System.Collections;
 using MiniJSON_Gamedonia;
 using LitJson_Gamedonia;
 
-public class GamedoniaFiles: MonoBehaviour
-{
-	private DownloadManager downloadManager;
-	private string downloadFolder;
-	private ArrayList downloads;
-	private ArrayList downloadeds;
-	private int pendingUrlDownloads;
-
-	private static GamedoniaFiles _instance;
-
-	public bool debug = true;
-
-	public event DownloadManagerEventHandler DownloadDidFinishLoading;
-	public event DownloadManagerEventHandler DownloadDidFail;
-	public event DownloadManagerEventHandler DownloadDidReceiveData;
-	public event DownloadManagerEventHandler DownloadDidStart;
-	public event DownloadManagerEventHandler DownloadDidFinishLoadingAll;
-	public event DownloadManagerEventHandler DownloadDidStartLoadingAllForManager;
-
-	public static GamedoniaFiles Instance
+namespace Gamedonia.Backend {
+	public class GamedoniaFiles: MonoBehaviour
 	{
-		get {
-			return _instance;
-		}
-	}
+		private DownloadManager downloadManager;
+		private string downloadFolder;
+		private ArrayList downloads;
+		private ArrayList downloadeds;
+		private int pendingUrlDownloads;
 
-	public void Awake() {
-		/*
-		string path = Application.dataPath.Substring (0, Application.dataPath.Length - 5); 
-		path = path.Substring(0, path.LastIndexOf('/'));  
-		downloadFolder = path + "/Documents/downloads";
-		*/
-		//Debug.Log ("[GamedoniaFiles] Awake executed");
-		downloadFolder = Application.persistentDataPath + "/downloads";
-		downloads = new ArrayList ();
-		downloadeds = new ArrayList ();
+		private static GamedoniaFiles _instance;
 
-		downloadManager = new DownloadManager(downloadFolder);
-		downloadManager.maxConcurrentDownloads = 4;
+		public bool debug = true;
 
-		_instance = this;
+		public event DownloadManagerEventHandler DownloadDidFinishLoading;
+		public event DownloadManagerEventHandler DownloadDidFail;
+		public event DownloadManagerEventHandler DownloadDidReceiveData;
+		public event DownloadManagerEventHandler DownloadDidStart;
+		public event DownloadManagerEventHandler DownloadDidFinishLoadingAll;
+		public event DownloadManagerEventHandler DownloadDidStartLoadingAllForManager;
 
-		downloadManager.DownloadDidFinishLoading += (object sender, DownloadManagerEvent e) => { if (DownloadDidFinishLoading != null) this.DownloadDidFinishLoading (sender, e); };
-		downloadManager.DownloadDidFail += (object sender, DownloadManagerEvent e) => { if (DownloadDidFail != null) this.DownloadDidFail (sender, e); };
-		downloadManager.DownloadDidReceiveData += (object sender, DownloadManagerEvent e) => { if (DownloadDidReceiveData != null) this.DownloadDidReceiveData (sender, e); };
-		downloadManager.DownloadDidStart += (object sender, DownloadManagerEvent e) => { if (DownloadDidStart != null) this.DownloadDidStart (sender, e); };
-		downloadManager.DownloadDidFinishLoadingAll += (object sender, DownloadManagerEvent e) => { if (DownloadDidFinishLoadingAll != null) this.DownloadDidFinishLoadingAll (sender, e); };
-		downloadManager.DownloadDidStartLoadingAllForManager += (object sender, DownloadManagerEvent e) => { if (DownloadDidStartLoadingAllForManager != null) this.DownloadDidStartLoadingAllForManager (sender, e); };
-	}
-
-	void OnApplicationPause (bool pause) {
-
-		if (downloadManager != null) {
-			//Debug.Log ("[Gamedonia Files] OnApplicationPause : " + pause);
-
-			if (pause) {
-					downloadManager.Deactivate ();
-			} else {
-					downloadManager.Activate ();
-			}
-		}
-		
-	}
-
-	void OnDestroy() {
-		if (downloadManager != null) downloadManager.PauseAll ();
-	}
-
-
-	public void AddDownloadWithFileId(string fileId) {
-		if (fileId != null) {
-			if (downloads == null) downloads = new ArrayList();				
-			downloads.Add(fileId);
-		}else {
-			Debug.LogWarning("Could not add a file for download with empty id");
-		}
-		
-	}
-
-	public void Begin() {
-
-		pendingUrlDownloads = downloads.Count;
-		
-		foreach (string fileId in downloads) 
+		public static GamedoniaFiles Instance
 		{
-			RequestAndAddDownload(fileId);
+			get {
+				return _instance;
+			}
 		}
 
-		#if UNITY_STANDALONE
-		//Remove downloadeds
-		ArrayList tmpDownloads = (ArrayList) downloads.Clone();
-		downloads.Clear();
-		foreach (string fileId in tmpDownloads) {
-			if (!downloadeds.Contains(fileId)) downloads.Add(fileId);
+		public void Awake() {
+			/*
+			string path = Application.dataPath.Substring (0, Application.dataPath.Length - 5); 
+			path = path.Substring(0, path.LastIndexOf('/'));  
+			downloadFolder = path + "/Documents/downloads";
+			*/
+			//Debug.Log ("[GamedoniaFiles] Awake executed");
+			downloadFolder = Application.persistentDataPath + "/downloads";
+			downloads = new ArrayList ();
+			downloadeds = new ArrayList ();
+
+			downloadManager = new DownloadManager(downloadFolder);
+			downloadManager.maxConcurrentDownloads = 4;
+
+			_instance = this;
+
+			downloadManager.DownloadDidFinishLoading += (object sender, DownloadManagerEvent e) => { if (DownloadDidFinishLoading != null) this.DownloadDidFinishLoading (sender, e); };
+			downloadManager.DownloadDidFail += (object sender, DownloadManagerEvent e) => { if (DownloadDidFail != null) this.DownloadDidFail (sender, e); };
+			downloadManager.DownloadDidReceiveData += (object sender, DownloadManagerEvent e) => { if (DownloadDidReceiveData != null) this.DownloadDidReceiveData (sender, e); };
+			downloadManager.DownloadDidStart += (object sender, DownloadManagerEvent e) => { if (DownloadDidStart != null) this.DownloadDidStart (sender, e); };
+			downloadManager.DownloadDidFinishLoadingAll += (object sender, DownloadManagerEvent e) => { if (DownloadDidFinishLoadingAll != null) this.DownloadDidFinishLoadingAll (sender, e); };
+			downloadManager.DownloadDidStartLoadingAllForManager += (object sender, DownloadManagerEvent e) => { if (DownloadDidStartLoadingAllForManager != null) this.DownloadDidStartLoadingAllForManager (sender, e); };
 		}
-		downloadeds.Clear();
-		#endif
-		
-	}
-	
-	public void Pause() {
-		
-		this.downloadManager.PauseAll();			
-		
-	}
 
-	public void Resume() {
+		void OnApplicationPause (bool pause) {
 
-		if (this.HasPendingDownloads ()) {
-			ArrayList resolvedDownloadUrls = this.GetResolverDownloadUrls ();
+			if (downloadManager != null) {
+				//Debug.Log ("[Gamedonia Files] OnApplicationPause : " + pause);
 
-			foreach(string downloadJSON in resolvedDownloadUrls) {
-				IDictionary download =  Json.Deserialize(downloadJSON) as IDictionary;
-				string url = download["Url"] as String;
-				string downloadFilename = this.downloadFolder + "/" + url.Substring(url.LastIndexOf("/")+1, (url.LastIndexOf("?") - url.LastIndexOf("/") - 1));
-				this.downloadManager.addDownloadWithFilename(downloadFilename,url,download["FileId"] as String);
+				if (pause) {
+						downloadManager.Deactivate ();
+				} else {
+						downloadManager.Activate ();
+				}
+			}
+			
+		}
+
+		void OnDestroy() {
+			if (downloadManager != null) downloadManager.PauseAll ();
+		}
+
+
+		public void AddDownloadWithFileId(string fileId) {
+			if (fileId != null) {
+				if (downloads == null) downloads = new ArrayList();				
+				downloads.Add(fileId);
+			}else {
+				Debug.LogWarning("Could not add a file for download with empty id");
+			}
+			
+		}
+
+		public void Begin() {
+
+			pendingUrlDownloads = downloads.Count;
+			
+			foreach (string fileId in downloads) 
+			{
+				RequestAndAddDownload(fileId);
 			}
 
-			this.downloadManager.Start(true);
+			#if UNITY_STANDALONE
+			//Remove downloadeds
+			ArrayList tmpDownloads = (ArrayList) downloads.Clone();
+			downloads.Clear();
+			foreach (string fileId in tmpDownloads) {
+				if (!downloadeds.Contains(fileId)) downloads.Add(fileId);
+			}
+			downloadeds.Clear();
+			#endif
+			
 		}
-	}
-
-	private bool HasPendingDownloads() {
-
-		ArrayList resolvedDownloadUrls = this.GetResolverDownloadUrls ();
-		return (resolvedDownloadUrls != null && resolvedDownloadUrls.Count > 0);
-
-	}
-
-
-	
-	private void RequestAndAddDownload(string fileId) {
 		
-		string url = "/file/get/url/" + fileId;
+		public void Pause() {
+			
+			this.downloadManager.PauseAll();			
+			
+		}
 
+		public void Resume() {
 
-		Gamedonia.RunCoroutine(
-			GamedoniaRequest.get(url, GamedoniaUsers.GetSessionToken(),
-		    	delegate (bool success, object data) {										
-					if (success) {
-						//Debug.Log("Before Internal Download URL");
-						IDictionary dataDownload = Json.Deserialize((string)data) as IDictionary;
-						InternalAddDownloadURL(dataDownload["downloadUrl"] as string, fileId);
-					}else {
-						InternalAddDownloadURL(fileId,fileId);
-					}												
+			if (this.HasPendingDownloads ()) {
+				ArrayList resolvedDownloadUrls = this.GetResolverDownloadUrls ();
+
+				foreach(string downloadJSON in resolvedDownloadUrls) {
+					IDictionary download =  Json.Deserialize(downloadJSON) as IDictionary;
+					string url = download["Url"] as String;
+					string downloadFilename = this.downloadFolder + "/" + url.Substring(url.LastIndexOf("/")+1, (url.LastIndexOf("?") - url.LastIndexOf("/") - 1));
+					this.downloadManager.addDownloadWithFilename(downloadFilename,url,download["FileId"] as String);
 				}
-			)
-		);	
-		
-	}
 
-	public void InternalAddDownloadURL(string url, string fileId) {
-		
-		string downloadFilename = downloadFolder + "/" + url.Substring(url.LastIndexOf("/")+1, (url.LastIndexOf("?") - url.LastIndexOf("/") - 1));
-		Download download = downloadManager.addDownloadWithFilename(downloadFilename,url,fileId);
-
-		pendingUrlDownloads--;
-
-		ArrayList resolvedDownloadUrls = this.GetResolverDownloadUrls();
-		string downloadJSON = JsonMapper.ToJson(download);
-
-
-		this.RemoveResolvedDownloadUrl(downloadJSON);
-		this.RemoveDownload(fileId);
-		resolvedDownloadUrls.Add(downloadJSON);
-		
-		if (pendingUrlDownloads == 0) {
-			PlayerPrefs.SetString("resolvedDownloadUrls", JsonMapper.ToJson(resolvedDownloadUrls));
-			PlayerPrefs.Save();
-			downloadManager.Start();
+				this.downloadManager.Start(true);
+			}
 		}
+
+		private bool HasPendingDownloads() {
+
+			ArrayList resolvedDownloadUrls = this.GetResolverDownloadUrls ();
+			return (resolvedDownloadUrls != null && resolvedDownloadUrls.Count > 0);
+
+		}
+
+
 		
+		private void RequestAndAddDownload(string fileId) {
+			
+			string url = "/file/get/url/" + fileId;
+
+
+			GamedoniaBackend.RunCoroutine(
+				GamedoniaRequest.get(url, GamedoniaUsers.GetSessionToken(),
+			    	delegate (bool success, object data) {										
+						if (success) {
+							//Debug.Log("Before Internal Download URL");
+							IDictionary dataDownload = Json.Deserialize((string)data) as IDictionary;
+							InternalAddDownloadURL(dataDownload["downloadUrl"] as string, fileId);
+						}else {
+							InternalAddDownloadURL(fileId,fileId);
+						}												
+					}
+				)
+			);	
+			
+		}
+
+		public void InternalAddDownloadURL(string url, string fileId) {
+			
+			string downloadFilename = downloadFolder + "/" + url.Substring(url.LastIndexOf("/")+1, (url.LastIndexOf("?") - url.LastIndexOf("/") - 1));
+			Download download = downloadManager.addDownloadWithFilename(downloadFilename,url,fileId);
+
+			pendingUrlDownloads--;
+
+			ArrayList resolvedDownloadUrls = this.GetResolverDownloadUrls();
+			string downloadJSON = JsonMapper.ToJson(download);
+
+
+			this.RemoveResolvedDownloadUrl(downloadJSON);
+			this.RemoveDownload(fileId);
+			resolvedDownloadUrls.Add(downloadJSON);
+			
+			if (pendingUrlDownloads == 0) {
+				PlayerPrefs.SetString("resolvedDownloadUrls", JsonMapper.ToJson(resolvedDownloadUrls));
+				PlayerPrefs.Save();
+				downloadManager.Start();
+			}
+			
+		}
+
+		private ArrayList GetResolverDownloadUrls() {
+
+			string resolvedDownloadUrlsSO = PlayerPrefs.GetString ("resolvedDownloadUrls");
+			ArrayList resolvedDownloadUrls = JsonMapper.ToObject<ArrayList> (resolvedDownloadUrlsSO);
+			if (resolvedDownloadUrls == null) resolvedDownloadUrls = new ArrayList ();
+
+			return resolvedDownloadUrls;
+			
+		}
+
+		private void RemoveResolvedDownloadUrl(string resolvedDownloadUrl) {
+
+			downloadManager.RemoveResolveDownloadUrl (resolvedDownloadUrl);
+
+		}
+
+		private void RemoveDownload(string fileId) {
+
+			//downloadManager.RemoveDownload (download);
+
+			#if UNITY_STANDALONE
+			if (downloadeds == null) downloadeds = new ArrayList();
+			downloadeds.Add(fileId);
+			#else
+			int removeIndex = downloads.IndexOf (fileId);
+			if (removeIndex != -1) downloads.RemoveAt (removeIndex);
+			#endif
+
+		}
+
+		private void RemoveAllDownload() {
+			downloads.Clear();
+		}
+
+
 	}
-
-	private ArrayList GetResolverDownloadUrls() {
-
-		string resolvedDownloadUrlsSO = PlayerPrefs.GetString ("resolvedDownloadUrls");
-		ArrayList resolvedDownloadUrls = JsonMapper.ToObject<ArrayList> (resolvedDownloadUrlsSO);
-		if (resolvedDownloadUrls == null) resolvedDownloadUrls = new ArrayList ();
-
-		return resolvedDownloadUrls;
-		
-	}
-
-	private void RemoveResolvedDownloadUrl(string resolvedDownloadUrl) {
-
-		downloadManager.RemoveResolveDownloadUrl (resolvedDownloadUrl);
-
-	}
-
-	private void RemoveDownload(string fileId) {
-
-		//downloadManager.RemoveDownload (download);
-
-		#if UNITY_STANDALONE
-		if (downloadeds == null) downloadeds = new ArrayList();
-		downloadeds.Add(fileId);
-		#else
-		int removeIndex = downloads.IndexOf (fileId);
-		if (removeIndex != -1) downloads.RemoveAt (removeIndex);
-		#endif
-
-	}
-
-	private void RemoveAllDownload() {
-		downloads.Clear();
-	}
-
-
 }

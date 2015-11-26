@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Gamedonia.Backend;
 
 public class ResetPassword : MonoBehaviour {
 
@@ -49,7 +50,7 @@ public class ResetPassword : MonoBehaviour {
 			errorMsg = "Password reset successfully, please check your email for instructions on how to complete the process.";
 			Debug.Log(errorMsg);
 		}else {
-			errorMsg = Gamedonia.getLastError().ToString();
+			errorMsg = GamedoniaBackend.getLastError().ToString();
 			Debug.Log(errorMsg);
 		}
 	}

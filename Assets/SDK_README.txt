@@ -1,7 +1,3 @@
-///////////////////////////////////
-Gamedonia Unity SDK Readme (1.13.3)
-///////////////////////////////////
-
 To use this SDK:
 
 1. Open a Unity project.
