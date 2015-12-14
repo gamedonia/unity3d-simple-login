@@ -42,12 +42,15 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)signIn:(GIDSignIn *)signIn presentViewController:(UIViewController *)viewController {
 
-    NSLog(@"En Sign In Present ViewController");
+    UnityPause(true);
+    [[[[[UIApplication sharedApplication] delegate]window] rootViewController] presentViewController:viewController animated:YES completion:nil];
+    
 }
 
 - (void)signIn:(GIDSignIn *)signIn dismissViewController:(UIViewController *)viewController {
     
-    NSLog(@"En Sign In Dismiss ViewController");
+    UnityPause(false);
+    [[[[[UIApplication sharedApplication] delegate]window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
     
 }
 
