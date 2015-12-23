@@ -668,7 +668,7 @@ namespace Gamedonia.Backend {
 			
 			GDUser user = new GDUser();
 			Credentials credentials = new Credentials();
-			credentials.open_udid = OpenUDIDPlugin.GetOpenUDID();
+			credentials.open_udid = GamedoniaSilent.GetSilentId();
 			user.credentials = credentials;                        	
 	        	
 			GamedoniaUsers.CreateUser(user, ProcessCreateUser);	
@@ -677,7 +677,7 @@ namespace Gamedonia.Backend {
 		void ProcessCreateUser(bool success) {
 			
 			//Login with open_udid
-			GamedoniaUsers.LoginUserWithOpenUDID(OpenUDIDPlugin.GetOpenUDID(), ProcessLogin);
+			GamedoniaUsers.LoginUserWithOpenUDID(GamedoniaSilent.GetSilentId(), ProcessLogin);
 
 		}
 		
