@@ -762,6 +762,7 @@ namespace LitJson_Gamedonia
                 return;
             }
 
+
             Type obj_type = obj.GetType ();
 
             // See if there's a custom exporter for the object

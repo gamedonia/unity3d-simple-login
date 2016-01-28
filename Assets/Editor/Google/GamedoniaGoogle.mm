@@ -19,12 +19,26 @@ void _initGoogle(char* clientId) {
     NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
     NSString* iosClientId = [infoDict objectForKey:@"GoogleClientId"];
     
+    NSLog(@"GoogleClientId: %@",iosClientId);
+    NSLog(@"Server ClientId: %@", [NSString stringWithUTF8String:clientId]);
+    
+    [[GIDSignIn sharedInstance] setClientID:iosClientId];
+    [[GIDSignIn sharedInstance] setServerClientID:[NSString stringWithUTF8String:clientId]];
+    [[GIDSignIn sharedInstance] setShouldFetchBasicProfile:YES];
+    [[GIDSignIn sharedInstance] setDelegate:[GoogleHelper sharedHelper]];
+    [[GIDSignIn sharedInstance] setAllowsSignInWithBrowser:NO];
+    [[GIDSignIn sharedInstance] setAllowsSignInWithWebView:YES];
+    [[GIDSignIn sharedInstance] setUiDelegate:[GoogleHelper sharedHelper]];
+    
+    /*
     [GIDSignIn sharedInstance].clientID = iosClientId;
     [GIDSignIn sharedInstance].serverClientID = [NSString stringWithUTF8String:clientId];
     [GIDSignIn sharedInstance].shouldFetchBasicProfile = YES;
     [GIDSignIn sharedInstance].delegate = [GoogleHelper sharedHelper];
+    [GIDSignIn sharedInstance].allowsSignInWithWebView = YES;
+    [GIDSignIn sharedInstance].allowsSignInWithBrowser = NO;
     [GIDSignIn sharedInstance].uiDelegate = [GoogleHelper sharedHelper];
-    
+     */
 
     //Nos registramos para el centro de notificaciones
     [[NSNotificationCenter defaultCenter] addObserver:[GoogleHelper sharedHelper] selector:@selector(handleOpenUrl:) name:kUnityOnOpenURL object:nil];

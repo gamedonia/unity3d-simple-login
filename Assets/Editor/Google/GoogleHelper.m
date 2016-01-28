@@ -40,17 +40,18 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 }
 
 
-- (void)signIn:(GIDSignIn *)signIn presentViewController:(UIViewController *)viewController {
 
-    UnityPause(true);
-    [[[[[UIApplication sharedApplication] delegate]window] rootViewController] presentViewController:viewController animated:YES completion:nil];
+- (void)signIn:(GIDSignIn *)signIn presentViewController:(UIViewController *)viewController {
     
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [topController presentViewController:viewController animated:NO completion:nil];
+   
 }
 
 - (void)signIn:(GIDSignIn *)signIn dismissViewController:(UIViewController *)viewController {
     
-    UnityPause(false);
-    [[[[[UIApplication sharedApplication] delegate]window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [topController dismissViewControllerAnimated:NO completion:nil];
     
 }
 

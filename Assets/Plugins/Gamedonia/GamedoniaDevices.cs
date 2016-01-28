@@ -31,6 +31,9 @@ namespace Gamedonia.Backend {
 		
 			device.deviceId = OpenUDIDPlugin.GetOpenUDID();
 			device.deviceType = platforms.ContainsKey(Application.platform.ToString()) ? platforms[Application.platform.ToString()] : "";
+			device.timeZoneGMTOffset = GamedoniaDeviceInfo.GetTimeZoneGMTOffset();
+			device.language = GamedoniaDeviceInfo.GetLanguageCode();
+			device.country = GamedoniaDeviceInfo.GetCountryCode();
 
 			registeredServices = 0;
 
@@ -86,6 +89,9 @@ namespace Gamedonia.Backend {
 		public string deviceToken;
 		public string deviceType;
 		public string uid;
+		public string language;
+		public string country;
+		public double timeZoneGMTOffset;
 		
 	}
 }

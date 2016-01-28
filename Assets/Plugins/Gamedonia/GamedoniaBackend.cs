@@ -52,9 +52,24 @@ namespace Gamedonia.Backend {
 			DontDestroyOnLoad(this);
 			GamedoniaRequest.initialize(ApiKey,Secret, ApiServerUrl, ApiVersion.ToString());
 			Debug.Log ("Gamedonia initialized successfully");
+
+			initJsonMapper ();		
+
 		}
 		
+		private static void initJsonMapper() {
 
+			//Setup the mapper.
+			JsonMapper.RegisterExporter (
+				delegate(DateTime obj, JsonWriter writer) {
+				writer.WriteObjectStart();
+				writer.WritePropertyName("@ISODate");
+				writer.Write(String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'}",obj)); //UniversalSortableDateTimeFormat
+				writer.WriteObjectEnd();
+			}
+			);
+
+		}
 
 		public static Coroutine RunCoroutine(IEnumerator routine)
 		{

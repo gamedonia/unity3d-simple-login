@@ -31,6 +31,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UnityEngine;
 
 namespace MiniJSON_Gamedonia {
     // Example usage:
@@ -154,7 +155,21 @@ namespace MiniJSON_Gamedonia {
                         json.Read();
 
                         // value
-                        table[name] = ParseValue();
+						object val = ParseValue();
+
+						if (val is Dictionary<string,object>) {
+							Dictionary<string,object> tmpVal = val as Dictionary<string,object>;
+							if (tmpVal.Count == 1 && tmpVal.ContainsKey("@ISODate")) {
+								table[name] = DateTime.Parse(tmpVal["@ISODate"].ToString());
+							}else {
+								table[name] = val;
+							}
+						}else if (val is String && name.Equals("ISODate")) {
+							Debug.Log ("caso especial");
+						}else {
+							table[name] = val;
+						}
+
                         break;
                     }
                 }
@@ -182,7 +197,18 @@ namespace MiniJSON_Gamedonia {
                     default:
                         object value = ParseByToken(nextToken);
 
-                        array.Add(value);
+						//Date type 
+						if (value is Dictionary<string,object>) {
+							Dictionary<string,object> tmpVal = value as Dictionary<string,object>;
+							if (tmpVal.Count == 1 && tmpVal.ContainsKey("@ISODate")) {
+								array.Add(DateTime.Parse(tmpVal["@ISODate"].ToString()));
+							}else {
+								array.Add(value);
+							}
+						}else {
+							array.Add(value);
+						}
+
                         break;
                     }
                 }
@@ -215,6 +241,7 @@ namespace MiniJSON_Gamedonia {
                     return null;
                 }
             }
+
 
             string ParseString() {
                 StringBuilder s = new StringBuilder();
