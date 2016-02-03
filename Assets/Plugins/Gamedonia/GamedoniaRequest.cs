@@ -147,7 +147,7 @@ namespace Gamedonia.Backend {
 			string path = _baseURL + "/" + _version + url;
 			string date = GetCurrentDate();
 			Request request = new Request("get",path);
-			request.AddHeader(GD_SESSION_TOKEN,sessionToken);
+			if (sessionToken != null) request.AddHeader(GD_SESSION_TOKEN,sessionToken);
 			request.AddHeader(GD_APIKEY, _apiKey);
 			request.AddHeader("Date", date);
 			request.AddHeader(GD_SIGNATURE, Sign(_apiKey, _secret, date, "GET", request.uri.AbsolutePath));

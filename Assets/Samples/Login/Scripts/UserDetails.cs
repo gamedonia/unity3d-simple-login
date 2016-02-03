@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 using Gamedonia.Backend;
 
 public class UserDetails : MonoBehaviour {
@@ -32,8 +33,11 @@ public class UserDetails : MonoBehaviour {
 		
 		GUI.Label(UtilResize.ResizeGUI(new Rect(80,60,220,25)),"Regis. Date: ", "LabelSmallBold");
 		
-		if (userProfile != null && userProfile.profile["registerDate"] != null) 
-			GUI.Label(UtilResize.ResizeGUI(new Rect(170,60,220,25)), userProfile.profile["registerDate"] as string, "LabelSmall");
+		if (userProfile != null && userProfile.profile["registerDate"] != null) {
+			
+			DateTime d = (DateTime)userProfile.profile["registerDate"];
+			GUI.Label(UtilResize.ResizeGUI(new Rect(170,60,220,25)), d.ToUniversalTime().ToString(), "LabelSmall");
+		}
 		
 		if (GUI.Button (UtilResize.ResizeGUI(new Rect (80,150, 220, 50)), "Logout")) {
 			

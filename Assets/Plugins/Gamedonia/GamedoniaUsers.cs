@@ -25,7 +25,8 @@ namespace Gamedonia.Backend {
 		}
 		
 		public static string GetSessionToken() {
-			return sessionToken.session_token;
+			if (sessionToken != null) return sessionToken.session_token;
+			return null;
 		}
 		
 		public static void Authenticate(Action<bool> callback) {
