@@ -141,13 +141,13 @@ namespace Gamedonia.Backend {
 
 		private static void RegisterDeviceAfterLogin(Action<bool> callback) {
 
-			if (GamedoniaBackend.INSTANCE.IsDeviceRegisterNeeded()) {
+			//if (GamedoniaBackend.INSTANCE.IsDeviceRegisterNeeded()) {
 				GamedoniaDevices.GetProfile(
 					delegate (bool successDevProfile, GDDeviceProfile device) {
 						if (successDevProfile) {
-							switch(device.deviceType) {
-								case "ios":
-								case "android":	
+							//switch(device.deviceType) {
+								//case "ios":
+								//case "android":	
 									if (GamedoniaUsers.me == null) {								
 										GamedoniaUsers.GetMe(
 											delegate(bool success, GDUserProfile profile) {
@@ -172,20 +172,20 @@ namespace Gamedonia.Backend {
 											}
 										);
 									}
-									break;
-								default:
-									if (callback != null) callback(successDevProfile);
-									break;
-							}
+									//break;
+								//default:
+									//if (callback != null) callback(successDevProfile);
+									//break;
+							//}
 						} else {
 							Debug.LogWarning("The device has not been registered due to an error");
 							if (callback != null) callback(successDevProfile);
 						}			
 					}
 				);
-			}else {
-				if (callback != null) callback(true);
-			}
+			//}else {
+			//	if (callback != null) callback(true);
+			//}
 		}
 
 		public static void LoginUserWithEmail(string email, string password, Action<bool> callback) {

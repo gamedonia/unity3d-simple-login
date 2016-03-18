@@ -6,7 +6,8 @@
 	<array/>
 	<key>requiredFrameworks</key>
 	<array>
-		<string>Security.framework</string>		
+		<string>Security.framework</string>
+		<string>AdSupport.framework</string>		
 	</array>
 	<key>pListAdditions</key>
 	<array/>

@@ -73,7 +73,7 @@ namespace Gamedonia.Backend {
 		void Awake() {
 
 			GDService service = new GDService();
-			service.ProfileEvent += new ProfilerEventHandler(Profile);
+			service.ProfileEvent += new ProfileEventHandler(Profile);
 			GamedoniaDevices.services.Add(service);
 
 			#if UNITY_EDITOR
