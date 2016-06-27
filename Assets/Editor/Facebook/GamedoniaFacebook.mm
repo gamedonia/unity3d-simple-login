@@ -83,7 +83,7 @@ void openSessionWithPermissionsOfType(const char** permissions, int size, const 
     FBSession *session = nil;
     @try
     {
-        session = [[FBSession alloc] initWithAppID:appID permissions:nspermissions defaultAudience:FBSessionDefaultAudienceFriends urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy nullCacheInstance]];
+        session = [[FBSession alloc] initWithAppID:appID permissions:nspermissions defaultAudience:FBSessionDefaultAudienceFriends urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
         [FBSession setActiveSession:session];
         
         if (allowUI || session.state == FBSessionStateCreatedTokenLoaded) {
@@ -180,16 +180,20 @@ void _getAccessToken(char* destAccessToken,  size_t n) {
     FBSession *session = [FBSession activeSession];
     NSString *accessToken = session.accessTokenData.accessToken;
     
-    NSLog(@"Access token: %@",accessToken);
+    FBAccessTokenData* accessTokenData = [[FBSessionTokenCachingStrategy defaultInstance] fetchFBAccessTokenData];
     
     if ([accessToken length] == 0) {
+        NSObject* cachedData = [[NSUserDefaults standardUserDefaults] objectForKey:@"FBAccessTokenInformationKey"];
         strncpy(destAccessToken, "", n);
     }else {
         const char* strAccessToken = [accessToken UTF8String];
         strncpy(destAccessToken, strAccessToken, n);
     }
     
+    NSLog(@"Access token: %@",accessToken);
+    
 }
+
 
 void _dialog(const char* method, const char* parameters, bool allowNativeUI, const char* callbackName) {
     
